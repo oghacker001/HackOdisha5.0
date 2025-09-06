@@ -46,7 +46,11 @@ const UserSchema = new mongoose.Schema({
     totalDonation:{
         type:Number,
         default:0
-    }
+    },
+    profileImage: { 
+        data: Buffer, 
+        contentType: String 
+    },
 });
 
 const userModel = mongoose.models.User || mongoose.model('User', UserSchema);

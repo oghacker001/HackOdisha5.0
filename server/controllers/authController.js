@@ -71,6 +71,7 @@ export const Register = async (req, res) => {
         return res.status(201).json({
             success: true,
             role: user.role,
+            token,
             user: {
                 id: user._id,
                 displayName: user.displayName || null,
@@ -117,6 +118,7 @@ export const Login = async (req, res) => {
         return res.json({
             success: true,
             role: user.role,
+            token,
             user: {
                 id: user._id,
                 displayName: user.displayName || null,
