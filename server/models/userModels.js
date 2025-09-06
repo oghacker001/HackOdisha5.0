@@ -34,8 +34,20 @@ const UserSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    campaigns:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Campaign"
+    }],
+    donations:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Donation"
+    }],
+    totalDonation:{
+        type:Number,
+        default:0
     }
 });
 
-const userModel = mongoose.models.user || mongoose.model('user', UserSchema);
+const userModel = mongoose.models.User || mongoose.model('User', UserSchema);
 export default userModel;
