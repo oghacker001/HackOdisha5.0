@@ -7,13 +7,23 @@ import passport from 'passport';
 import connectDB from './config/mongodb.js';
 import { configurePassport } from './config/passport.js';
 import authRouter from './routes/authRoute.js';
-import userRouter from './routes/userRoute.js'
+import userRouter from './routes/userRoute.js';
+import badgeRouter from './routes/badgeRoutes.js';
 import donationRouter from './routes/donationRoute.js'
 import "./config/passport.js";
-import campaignRouter from './routes/campaignRoute.js'
+import campaignRouter from './routes/campaignRoute.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 const app= express();
 const port= process.env.PORT || 4000;
 connectDB();
+
+// Path setup (for ES modules)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve static files from public folder
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.json());
 app.use(cookieParser());
@@ -42,6 +52,8 @@ app.use('/api/auth',authRouter); //It will work in /api/auth/register
 app.use('/api/campaign',campaignRouter);
 app.use('/api/users',userRouter);
 app.use("/api/donations", donationRouter);
+app.use('/api/badge',badgeRouter);
+
 app.listen(port, ()=>{
     console.log(`Server started on ${port}`);
 });
