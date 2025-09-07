@@ -14,15 +14,18 @@ export const searchAll = async (req, res, next) => {
         // Create a case-insensitive regex
         const regex = new RegExp(query, 'i');
 
+        // FIXED: Only search approved campaigns and events for public access
         const campaigns = await Campaign.find({
+            status: "approved", // Only show approved campaigns
             $or: [
                 { title: { $regex: regex } },
                 { description: { $regex: regex } },
-                { categories: { $in: [query] } }
+                { categories: { $regex: regex } } // FIXED: Use regex for categories too
             ]
         }).populate("organizer", "displayName profilePhoto");
 
         const events = await Event.find({
+            status: "approved", // Only show approved events
             $or: [
                 { name: { $regex: regex } },
                 { description: { $regex: regex } },

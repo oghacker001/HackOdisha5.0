@@ -2,6 +2,7 @@ import Campaign from "../models/Campaign.js";
 import User from "../models/userModels.js";
 import Event from "../models/event.js";
 import Comment from "../models/comment.js";
+import Update from "../models/update.js";
 import mongoose from "mongoose";
 
 export const createCampaign = async (req, res, next) => {
@@ -153,4 +154,35 @@ export const getProfile = async (req, res, next) => {
         if (!user) return res.status(404).json({ message: "User not found" });
         res.success(user, "User profile retrieved successfully");
     } catch (err) { next(err); }
+};
+
+// New functions for campaign updates
+export const createUpdate = async (req, res, next) => {
+    try {
+        const { text, campaignId } = req.body;
+        if (!text || !campaignId) {
+            return res.status(400).json({ message: "Update text and campaign ID are required." });
+        }
+        const newUpdate = new Update({
+            text,
+            campaign: campaignId,
+            organizer: req.userId,
+        });
+        await newUpdate.save();
+        res.success(newUpdate, "Campaign update created successfully");
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getCampaignUpdates = async (req, res, next) => {
+    try {
+        const { campaignId } = req.params;
+        const updates = await Update.find({ campaign: campaignId })
+            .populate('organizer', 'displayName profilePhoto')
+            .sort({ createdAt: -1 });
+        res.success(updates, "Campaign updates retrieved successfully");
+    } catch (err) {
+        next(err);
+    }
 };
