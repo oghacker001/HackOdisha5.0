@@ -1,57 +1,30 @@
 import mongoose from "mongoose";
 
-const CampaignSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-        trim: true,
-        maxlength: 100
-    },
-    description: {
-        type: String,
-        required: true,
-        trim: true,
-        maxlength: 1000
-    },
-    organizer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User", // who created the campaign
-        required: true
-    },
-    goalAmount: {
-        type: Number,
-        required: true,
-        min: 1
-    },
-    raisedAmount: {
-        type: Number,
-        default: 0
-    },
-    category: {
-        type: String,
-        enum: ["Education", "Health", "Environment", "Community", "Other"],
-        default: "Other"
-    },
-    deadline: {
-        type: Date,
-        required: true
-    },
-    status: {
-        type: String,
-        enum: ["Active", "Completed", "Expired"],
-        default: "Active"
-    },
-    image: {
-        type: String, // optional campaign image/banner (URL)
-        default: ""
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+const MilestoneSchema = new mongoose.Schema({
+    description: { type: String, required: true },
+    target: { type: Number, required: true },
+    status: { type: String, enum: ["pending", "achieved"], default: "pending" },
 });
 
-// ✅ Model (capitalized, auto collection "campaigns")
-const campaignModel = mongoose.models.Campaign || mongoose.model("Campaign", CampaignSchema);
+const CampaignSchema = new mongoose.Schema({
+    title: { type: String, required: true, index: true },
+    description: { type: String, required: true },
+    organizer: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
+    funding_goal: { type: Number, required: true },
+    milestones: [MilestoneSchema],
+    categories: [{ type: String, index: true }],
+    location: { type: String },
+    social_media: {
+        facebook: { type: String },
+        twitter: { type: String },
+        website: { type: String },
+    },
+    images: [{ type: String }],
+    validation_docs: [{ type: String }],
+    status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+    termsAccepted: { type: Boolean, required: true, validate: [ (v) => v === true, 'You must accept the terms and conditions.' ] }, // 👈 New field
+    createdAt: { type: Date, default: Date.now },
+});
 
-export default campaignModel;
+const Campaign = mongoose.model('Campaign', CampaignSchema);
+export default Campaign;

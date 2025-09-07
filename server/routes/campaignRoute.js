@@ -1,13 +1,13 @@
 import express from 'express';
+import { upload } from '../middleware/uploadMiddleware.js';
 import { authMiddleware, organizerOrAdmin } from '../middleware/auth.js';
-import { createCampaign, deleteCampaign, getCampaignById, getCampaigns, updateCampaign } from '../controllers/campaignController.js';
-const router=express.Router();
+import { createCampaign, getCampaigns, getCampaignById, updateCampaign, deleteCampaign } from '../controllers/campaignController.js';
+const campaignRouter = express.Router();
 
-router.get('/',authMiddleware,getCampaigns);
-router.get('/:id',authMiddleware,getCampaignById);
+campaignRouter.get('/', authMiddleware, getCampaigns);
+campaignRouter.get('/:id', authMiddleware, getCampaignById);
+campaignRouter.post('/', authMiddleware, organizerOrAdmin, upload.array('images', 5), createCampaign);
+campaignRouter.put('/:id', authMiddleware, organizerOrAdmin, upload.array('images', 5), updateCampaign);
+campaignRouter.delete('/:id', authMiddleware, organizerOrAdmin, deleteCampaign);
 
-router.post('/',authMiddleware,organizerOrAdmin,createCampaign);
-router.put('/:id',authMiddleware,organizerOrAdmin,updateCampaign);
-router.delete('/:id',authMiddleware,organizerOrAdmin,deleteCampaign);
-
-export default router;
+export default campaignRouter;
