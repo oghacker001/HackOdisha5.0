@@ -8,6 +8,7 @@ import connectDB from './config/mongodb.js';
 import { configurePassport } from './config/passport.js';
 import authRouter from './routes/authRoute.js';
 import userRouter from './routes/userRoute.js'
+import donationRouter from './routes/donationRoute.js'
 import "./config/passport.js";
 import campaignRouter from './routes/campaignRoute.js'
 const app= express();
@@ -38,9 +39,9 @@ app.get('/',(req,res)=>{
 })
 
 app.use('/api/auth',authRouter); //It will work in /api/auth/register
-app.use('/campaign',campaignRouter);
+app.use('/api/campaign',campaignRouter);
 app.use('/api/users',userRouter);
-
+app.use("/api/donations", donationRouter);
 app.listen(port, ()=>{
     console.log(`Server started on ${port}`);
 });
